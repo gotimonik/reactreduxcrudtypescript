@@ -14,6 +14,19 @@ const PostReducer = (state = initialState, action: Props) => {
         loading: false,
       };
 
+    case types.DELETE_POST:
+    case types.ADD_POST:
+      return {
+        ...state,
+        loading: false,
+      };
+
+    case types.GET_SINGLE_PAGE:
+      return {
+        ...state,
+        post: action.payload,
+      };
+
     default:
       return state;
   }

@@ -18,8 +18,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Link } from "react-router-dom";
 import { deepPurple, green, orange } from "@mui/material/colors";
 import { useDispatch, useSelector } from "react-redux";
-import { loadPosts } from "../redux/actions";
-
+import { deletePost, loadPosts } from "../redux/actions";
+import { State } from "../redux/index";
+import { PostProps } from "../models/redux";
 const useStyle = makeStyles({
   headingColor: {
     backgroundColor: deepPurple[400],
@@ -44,9 +45,19 @@ const ListPost = () => {
   const clasess = useStyle();
   const dispatch = useDispatch();
 
+  const { posts } = useSelector((state: State) => state.post);
+
   useEffect(() => {
     dispatch(loadPosts());
   }, []);
+
+  // Hanlde Delete
+
+  const handleDelete = (id: number) => {
+    if (window.confirm("Are You Sure You Want To Delete?")) {
+      dispatch(deletePost(id));
+    }
+  };
   return (
     <>
       <Box textAlign="center" p={2} className={clasess.stuListColor}>
@@ -71,31 +82,32 @@ const ListPost = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* {employees.map((employ, i) => {
-              return (
-                <> */}
-            <TableRow>
-              <TableCell align="center">1</TableCell>
-              <TableCell align="center">vijay</TableCell>
-              <TableCell align="center">vijay@gmail.com</TableCell>
-              <TableCell align="center">
-                <Tooltip title="Edit">
-                  <IconButton>
-                    <Link to="/edit/1">
-                      <EditIcon color="primary"></EditIcon>
-                    </Link>
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Delete">
-                  <IconButton>
-                    <DeleteIcon color="secondary"></DeleteIcon>
-                  </IconButton>
-                </Tooltip>
-              </TableCell>
-            </TableRow>
-            {/* </>
-              );
-            })} */}
+            {posts &&
+              posts.map((items: PostProps, i) => {
+                return (
+                  <>
+                    <TableRow key={i}>
+                      <TableCell align="center">{items.id}</TableCell>
+                      <TableCell align="center">{items.title}</TableCell>
+                      <TableCell align="center">{items.body}</TableCell>
+                      <TableCell align="center">
+                        <Tooltip title="Edit">
+                          <IconButton>
+                            <Link to={`post/edit/${items.id}`}>
+                              <EditIcon color="primary"></EditIcon>
+                            </Link>
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                          <IconButton onClick={() => handleDelete(items.id)}>
+                            <DeleteIcon color="secondary"></DeleteIcon>
+                          </IconButton>
+                        </Tooltip>
+                      </TableCell>
+                    </TableRow>
+                  </>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>

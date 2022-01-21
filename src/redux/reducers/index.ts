@@ -2,7 +2,8 @@ import { combineReducers } from "redux";
 import PostReducer from "./PostReducer";
 
 const Reducers = combineReducers({
-    post : PostReducer
-})
+  post: PostReducer,
+});
 
-export default Reducers
+export type State = ReturnType<typeof Reducers>;
+export default Reducers;
