@@ -4,10 +4,10 @@ import TextField from "@mui/material/TextField";
 import { deepPurple, green, orange } from "@mui/material/colors";
 import { makeStyles } from "@mui/styles";
 import { useDispatch, useSelector } from "react-redux";
-import { addPost, getSinglePost, updatePost } from "../redux/actions";
+import { getPostById, updatePost } from "../redux/actions";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { State } from "../redux/index";
+import { Store } from "../models/redux";
 
 interface PropsTypes {
   title: string;
@@ -40,29 +40,25 @@ const EditPost = () => {
   const clasess = useStyle();
   const { id }: any = useParams();
 
-  // Insert Post With API
-
   const [post, setPost] = useState<PropsTypes | undefined>(undefined);
 
+  const storePost = useSelector((state: Store) => state.post.post);
   useEffect(() => {
-    dispatch(getSinglePost(id));
-  }, []);
-
-  const postItem = useSelector((state: State) => state.post.post);
+    dispatch(getPostById(id));
+  }, [id, dispatch]);
 
   useEffect(() => {
-    if (post) {
-      setPost({ ...post });
-    }
-  }, [postItem]);
+    if (storePost) setPost({ ...storePost });
+  }, [storePost]);
 
-  // Get Value From TextField And Set into The State
+  if (!post) return <div></div>;
 
   function GetDatafromField(e: React.ChangeEvent<HTMLInputElement>) {
-    setPost({
-      ...post,
-      [e.target.name]: e.target.value,
-    });
+    if (post)
+      setPost({
+        ...post,
+        [e.target.name]: e.target.value,
+      });
   }
 
   // Form Submit
@@ -73,7 +69,6 @@ const EditPost = () => {
     navigate("/");
   };
 
-  if (!post) return <div></div>;
   return (
     <>
       <Grid container px={2}>

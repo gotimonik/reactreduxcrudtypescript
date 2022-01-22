@@ -6,7 +6,6 @@ import { makeStyles } from "@mui/styles";
 import { useDispatch } from "react-redux";
 import { addPost } from "../redux/actions";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
 interface PropsTypes {
   title: string;
   body: string;
@@ -57,7 +56,7 @@ const AddPost = () => {
 
   const OnFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(addPost(post));
+    dispatch(addPost({ ...post }));
     navigate("/");
   };
 
@@ -88,7 +87,6 @@ const AddPost = () => {
                   label="Body"
                   id="body"
                   required
-                  autoFocus
                   name="body"
                   autoComplete="Body"
                   onChange={GetDatafromField}

@@ -18,9 +18,8 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Link } from "react-router-dom";
 import { deepPurple, green, orange } from "@mui/material/colors";
 import { useDispatch, useSelector } from "react-redux";
-import { deletePost, loadPosts } from "../redux/actions";
-import { State } from "../redux/index";
-import { PostProps } from "../models/redux";
+import { deletePost, getAllPosts } from "../redux/actions";
+import { Post, Store } from "../models/redux";
 const useStyle = makeStyles({
   headingColor: {
     backgroundColor: deepPurple[400],
@@ -45,11 +44,11 @@ const ListPost = () => {
   const clasess = useStyle();
   const dispatch = useDispatch();
 
-  const { posts } = useSelector((state: State) => state.post);
-
+  const { posts } = useSelector((state: Store) => state.post);
+  console.log("posts", posts);
   useEffect(() => {
-    dispatch(loadPosts());
-  }, []);
+    if (!posts.length) dispatch(getAllPosts());
+  }, [dispatch, posts]);
 
   // Hanlde Delete
 
@@ -58,6 +57,7 @@ const ListPost = () => {
       dispatch(deletePost(id));
     }
   };
+  if (!posts.length) return <></>;
   return (
     <>
       <Box textAlign="center" p={2} className={clasess.stuListColor}>
@@ -83,29 +83,27 @@ const ListPost = () => {
           </TableHead>
           <TableBody>
             {posts &&
-              posts.map((items: PostProps, i) => {
+              posts.map((post: Post) => {
                 return (
-                  <>
-                    <TableRow key={i}>
-                      <TableCell align="center">{items.id}</TableCell>
-                      <TableCell align="center">{items.title}</TableCell>
-                      <TableCell align="center">{items.body}</TableCell>
-                      <TableCell align="center">
-                        <Tooltip title="Edit">
-                          <IconButton>
-                            <Link to={`post/edit/${items.id}`}>
-                              <EditIcon color="primary"></EditIcon>
-                            </Link>
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Delete">
-                          <IconButton onClick={() => handleDelete(items.id)}>
-                            <DeleteIcon color="secondary"></DeleteIcon>
-                          </IconButton>
-                        </Tooltip>
-                      </TableCell>
-                    </TableRow>
-                  </>
+                  <TableRow key={post.id}>
+                    <TableCell align="center">{post.id}</TableCell>
+                    <TableCell align="center">{post.title}</TableCell>
+                    <TableCell align="center">{post.body}</TableCell>
+                    <TableCell align="center">
+                      <Tooltip title="Edit">
+                        <IconButton>
+                          <Link to={`post/edit/${post.id}`}>
+                            <EditIcon color="primary"></EditIcon>
+                          </Link>
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Delete">
+                        <IconButton onClick={() => handleDelete(post.id)}>
+                          <DeleteIcon color="secondary"></DeleteIcon>
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
                 );
               })}
           </TableBody>

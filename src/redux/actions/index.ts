@@ -2,7 +2,8 @@ import * as types from "../constants/index";
 import axios from "axios";
 import { Dispatch } from "redux";
 
-import { Props } from "../../models/redux";
+import { AddPost, Props } from "../../models/redux";
+import { API_URL } from "../../shared/constant";
 
 const getPosts = (posts: Props) => ({
   type: types.GET_POSTS,
@@ -12,8 +13,9 @@ const getPosts = (posts: Props) => ({
 const postDeleted = () => ({
   type: types.DELETE_POST,
 });
-const postAdded = () => ({
+const postAdded = (post: AddPost) => ({
   type: types.ADD_POST,
+  payload: post,
 });
 
 const postUpdated = () => ({
@@ -24,46 +26,39 @@ const getPost = (post: {}) => ({
   payload: post,
 });
 
-export const loadPosts = () => {
+export const getAllPosts = () => {
   return async function (dispatch: Dispatch) {
-    const response = await axios.get(
-      "http://localhost:5000/posts"
-    );
+    const response = await axios.get(`${API_URL}/posts`);
     dispatch(getPosts(response.data));
   };
 };
 
 export const deletePost = (id: number) => {
   return async function (dispatch: Dispatch) {
-    await axios.delete(`http://localhost:5000/posts/${id}`);
+    await axios.delete(`${API_URL}/posts/${id}`);
     dispatch(postDeleted());
   };
 };
 
-export const addPost = (user: {}) => {
+export const addPost = (post: AddPost) => {
   return async function (dispatch: Dispatch) {
-    await axios.post(`http://localhost:5000/posts`, user);
-    dispatch(postAdded());
-    
+    await axios.post(`${API_URL}/posts`, post);
+    dispatch(postAdded(post));
   };
 };
 
-export const getSinglePost = (id: number) => {
+export const getPostById = (id: number) => {
   return async function (dispatch: Dispatch) {
-    const response = await axios.get(
-      `http://localhost:5000/posts/${id}`
-    );
+    const response = await axios.get(`${API_URL}/posts/${id}`);
     dispatch(getPost(response.data));
   };
 };
 
 // For Updating Post
 
-export const updatePost = (user : {} ,id: number) => {
+export const updatePost = (user: {}, id: number) => {
   return async function (dispatch: Dispatch) {
-     await axios.put(
-      `http://localhost:5000/posts/${id}`,user
-    );
+    await axios.put(`${API_URL}/posts/${id}`, user);
     dispatch(postUpdated());
   };
 };
