@@ -19,7 +19,6 @@ import { deepPurple, green, orange } from "@mui/material/colors";
 import { useDispatch, useSelector } from "react-redux";
 import { deletePost, getAllPosts, setPost } from "../redux/actions";
 import { Post, Store } from "../models/redux";
-import { Navigation } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 const useStyle = makeStyles({
   headingColor: {
