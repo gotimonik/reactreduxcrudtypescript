@@ -42,28 +42,25 @@ const EditPost = () => {
 
   // Insert Post With API
 
-  const [postItems, setPostItems] = useState<PropsTypes>({
-    title: "",
-    body: "",
-  });
+  const [post, setPost] = useState<PropsTypes | undefined>(undefined);
 
   useEffect(() => {
     dispatch(getSinglePost(id));
   }, []);
 
-  const { post } = useSelector((state: State) => state.post);
+  const postItem = useSelector((state: State) => state.post.post);
 
   useEffect(() => {
     if (post) {
-      setPostItems({ ...post });
+      setPost({ ...post });
     }
-  }, [post]);
+  }, [postItem]);
 
   // Get Value From TextField And Set into The State
 
   function GetDatafromField(e: React.ChangeEvent<HTMLInputElement>) {
-    setPostItems({
-      ...postItems,
+    setPost({
+      ...post,
       [e.target.name]: e.target.value,
     });
   }
@@ -72,10 +69,11 @@ const EditPost = () => {
 
   const OnFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(updatePost(postItems, id));
+    dispatch(updatePost(post, id));
     navigate("/");
   };
 
+  if (!post) return <div></div>;
   return (
     <>
       <Grid container px={2}>
@@ -92,7 +90,7 @@ const EditPost = () => {
                   required
                   autoFocus
                   name="title"
-                  value={postItems.title}
+                  value={post.title}
                   autoComplete="Tiel"
                   fullWidth
                   onChange={GetDatafromField}
@@ -106,7 +104,7 @@ const EditPost = () => {
                   required
                   autoFocus
                   name="body"
-                  value={postItems.body}
+                  value={post.body}
                   autoComplete="Body"
                   onChange={GetDatafromField}
                 />

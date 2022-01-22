@@ -6,6 +6,7 @@ import { makeStyles } from "@mui/styles";
 import { useDispatch } from "react-redux";
 import { addPost } from "../redux/actions";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 interface PropsTypes {
   title: string;
   body: string;
@@ -32,6 +33,7 @@ const useStyle = makeStyles({
 });
 
 const AddPost = () => {
+  // const { register, handleSubmit, errors } = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const clasess = useStyle();
