@@ -3,10 +3,12 @@ import { Typography, Box, Grid, Button } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { deepPurple, green, orange } from "@mui/material/colors";
 import { makeStyles } from "@mui/styles";
-import { useDispatch } from "react-redux";
-import { addPost, getSinglePost } from "../redux/actions";
+import { useDispatch, useSelector } from "react-redux";
+import { addPost, getSinglePost, updatePost } from "../redux/actions";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import { State } from "../redux/index";
+
 interface PropsTypes {
   title: string;
   body: string;
@@ -36,23 +38,32 @@ const EditPost = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const clasess = useStyle();
-  const { id } = useParams();
+  const { id }: any = useParams();
 
-  useEffect(() => {
-    dispatch(getSinglePost(id));
-  }, []);
-  // Insert Employees With API
+  // Insert Post With API
 
-  const [post, setPost] = useState<PropsTypes>({
+  const [postItems, setPostItems] = useState<PropsTypes>({
     title: "",
     body: "",
   });
 
+  useEffect(() => {
+    dispatch(getSinglePost(id));
+  }, []);
+
+  const { post } = useSelector((state: State) => state.post);
+
+  useEffect(() => {
+    if (post) {
+      setPostItems({ ...post });
+    }
+  }, [post]);
+
   // Get Value From TextField And Set into The State
 
   function GetDatafromField(e: React.ChangeEvent<HTMLInputElement>) {
-    setPost({
-      ...post,
+    setPostItems({
+      ...postItems,
       [e.target.name]: e.target.value,
     });
   }
@@ -61,7 +72,7 @@ const EditPost = () => {
 
   const OnFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(addPost(post));
+    dispatch(updatePost(postItems, id));
     navigate("/");
   };
 
@@ -81,6 +92,7 @@ const EditPost = () => {
                   required
                   autoFocus
                   name="title"
+                  value={postItems.title}
                   autoComplete="Tiel"
                   fullWidth
                   onChange={GetDatafromField}
@@ -94,6 +106,7 @@ const EditPost = () => {
                   required
                   autoFocus
                   name="body"
+                  value={postItems.body}
                   autoComplete="Body"
                   onChange={GetDatafromField}
                 />

@@ -15,6 +15,10 @@ const postDeleted = () => ({
 const postAdded = () => ({
   type: types.ADD_POST,
 });
+
+const postUpdated = () => ({
+  type: types.UPDATE_POST,
+});
 const getPost = (post: {}) => ({
   type: types.GET_SINGLE_PAGE,
   payload: post,
@@ -23,7 +27,7 @@ const getPost = (post: {}) => ({
 export const loadPosts = () => {
   return async function (dispatch: Dispatch) {
     const response = await axios.get(
-      "https://jsonplaceholder.typicode.com/posts"
+      "http://localhost:5000/posts"
     );
     dispatch(getPosts(response.data));
   };
@@ -31,23 +35,35 @@ export const loadPosts = () => {
 
 export const deletePost = (id: number) => {
   return async function (dispatch: Dispatch) {
-    await axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}`);
+    await axios.delete(`http://localhost:5000/posts/${id}`);
     dispatch(postDeleted());
   };
 };
 
 export const addPost = (user: {}) => {
   return async function (dispatch: Dispatch) {
-    await axios.post(`https://jsonplaceholder.typicode.com/posts/`, user);
+    await axios.post(`http://localhost:5000/posts`, user);
     dispatch(postAdded());
+    
   };
 };
 
 export const getSinglePost = (id: number) => {
   return async function (dispatch: Dispatch) {
     const response = await axios.get(
-      `https://jsonplaceholder.typicode.com/posts/${id}`
+      `http://localhost:5000/posts/${id}`
     );
     dispatch(getPost(response.data));
+  };
+};
+
+// For Updating Post
+
+export const updatePost = (user : {} ,id: number) => {
+  return async function (dispatch: Dispatch) {
+     await axios.put(
+      `http://localhost:5000/posts/${id}`,user
+    );
+    dispatch(postUpdated());
   };
 };

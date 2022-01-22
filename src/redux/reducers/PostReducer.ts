@@ -16,6 +16,7 @@ const PostReducer = (state = initialState, action: Props) => {
 
     case types.DELETE_POST:
     case types.ADD_POST:
+      case types.UPDATE_POST:
       return {
         ...state,
         loading: false,

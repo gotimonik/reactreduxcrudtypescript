@@ -23,10 +23,10 @@ const Header = () => {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              News
+              CRUD POST
             </Typography>
             <Link to="post/add">
-              <Button color="inherit">Login</Button>
+              <Button color="inherit">Add Post</Button>
             </Link>
           </Toolbar>
         </AppBar>
