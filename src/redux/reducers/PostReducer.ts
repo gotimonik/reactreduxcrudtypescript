@@ -1,5 +1,5 @@
 import * as types from "../constants/index";
-import { PostStore, Props } from "../../models/redux";
+import { Post, PostStore, Props } from "../../models/redux";
 
 const initialState: PostStore = {
   posts: [],
@@ -16,22 +16,45 @@ const PostReducer = (state = initialState, action: Props) => {
         loading: false,
       };
 
-    case types.DELETE_POST:
-    case types.ADD_POST: {
-      const id = state.posts.length + 1;
+    case types.DELETE_POST: {
+      const id = action.payload;
+      const postIndex = state.posts.findIndex((post) => post.id === id);
+      if (postIndex >= 0) {
+        state.posts.splice(postIndex, 1);
+      }
       return {
         ...state,
-        posts: [{ ...action.payload, id, userId: 1 }, ...state.posts],
         loading: false,
       };
     }
-    case types.UPDATE_POST:
+
+    case types.ADD_POST: {
+      const id = state.posts.length + 1;
+      const newPost = action.payload as Post;
+      return {
+        ...state,
+        posts: [{ ...newPost, id, userId: 1 }, ...state.posts],
+        loading: false,
+      };
+    }
+
+    case types.UPDATE_POST: {
+      const updatedPost = action.payload as Post;
+      const postIndex = state.posts.findIndex(
+        (post) => post.id === updatedPost.id
+      );
+      if (postIndex >= 0) {
+        state.posts[postIndex] = updatedPost;
+      } else {
+        state.posts = [{ ...updatedPost }, ...state.posts];
+      }
       return {
         ...state,
         loading: false,
       };
+    }
 
-    case types.GET_SINGLE_PAGE:
+    case types.SET_SELECTED_POST:
       return {
         ...state,
         post: action.payload,

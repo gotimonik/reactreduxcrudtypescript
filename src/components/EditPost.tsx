@@ -7,12 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getPostById, updatePost } from "../redux/actions";
 import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { Store } from "../models/redux";
-
-interface PropsTypes {
-  title: string;
-  body: string;
-}
+import { Post, Store } from "../models/redux";
 
 const useStyle = makeStyles({
   headingColor: {
@@ -40,16 +35,14 @@ const EditPost = () => {
   const clasess = useStyle();
   const { id }: any = useParams();
 
-  const [post, setPost] = useState<PropsTypes | undefined>(undefined);
+  const [post, setPost] = useState<Post | undefined>(undefined);
 
   const storePost = useSelector((state: Store) => state.post.post);
-  useEffect(() => {
-    dispatch(getPostById(id));
-  }, [id, dispatch]);
 
   useEffect(() => {
     if (storePost) setPost({ ...storePost });
-  }, [storePost]);
+    else dispatch(getPostById(id));
+  }, [storePost, id, dispatch]);
 
   if (!post) return <div></div>;
 
@@ -61,11 +54,9 @@ const EditPost = () => {
       });
   }
 
-  // Form Submit
-
   const OnFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(updatePost(post, id));
+    dispatch(updatePost(id, post));
     navigate("/");
   };
 

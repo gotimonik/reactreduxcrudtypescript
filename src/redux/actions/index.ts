@@ -2,7 +2,7 @@ import * as types from "../constants/index";
 import axios from "axios";
 import { Dispatch } from "redux";
 
-import { AddPost, Props } from "../../models/redux";
+import { AddPost, Post, Props } from "../../models/redux";
 import { API_URL } from "../../shared/constant";
 
 const getPosts = (posts: Props) => ({
@@ -10,19 +10,23 @@ const getPosts = (posts: Props) => ({
   payload: posts,
 });
 
-const postDeleted = () => ({
+const postDeleted = (id: number) => ({
   type: types.DELETE_POST,
+  payload: id,
 });
+
 const postAdded = (post: AddPost) => ({
   type: types.ADD_POST,
   payload: post,
 });
 
-const postUpdated = () => ({
+const postUpdated = (post: Post) => ({
   type: types.UPDATE_POST,
+  payload: post,
 });
-const getPost = (post: {}) => ({
-  type: types.GET_SINGLE_PAGE,
+
+const setSelectedPost = (post: Post) => ({
+  type: types.SET_SELECTED_POST,
   payload: post,
 });
 
@@ -36,7 +40,7 @@ export const getAllPosts = () => {
 export const deletePost = (id: number) => {
   return async function (dispatch: Dispatch) {
     await axios.delete(`${API_URL}/posts/${id}`);
-    dispatch(postDeleted());
+    dispatch(postDeleted(id));
   };
 };
 
@@ -50,15 +54,19 @@ export const addPost = (post: AddPost) => {
 export const getPostById = (id: number) => {
   return async function (dispatch: Dispatch) {
     const response = await axios.get(`${API_URL}/posts/${id}`);
-    dispatch(getPost(response.data));
+    dispatch(setSelectedPost(response.data));
   };
 };
 
-// For Updating Post
-
-export const updatePost = (user: {}, id: number) => {
+export const updatePost = (id: number, post: Post) => {
   return async function (dispatch: Dispatch) {
-    await axios.put(`${API_URL}/posts/${id}`, user);
-    dispatch(postUpdated());
+    await axios.put(`${API_URL}/posts/${id}`);
+    dispatch(postUpdated(post));
+  };
+};
+
+export const setPost = (post: Post) => {
+  return async function (dispatch: Dispatch) {
+    dispatch(setSelectedPost(post));
   };
 };

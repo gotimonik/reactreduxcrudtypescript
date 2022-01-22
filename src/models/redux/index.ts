@@ -1,6 +1,6 @@
 export interface Props {
   type: string;
-  payload: [];
+  payload: [] | string | number | Post;
 }
 export interface PostStore {
   posts: Post[];
